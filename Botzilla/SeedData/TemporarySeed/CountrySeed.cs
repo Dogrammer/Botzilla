@@ -18,13 +18,11 @@ namespace Botzilla.Api.SeedData.TemporarySeed
                 {
                     Name = "Croatia",
                     IsPrimary = true,
-                    TrackingState = TrackingState.Added,
                     ActiveFrom = DateTimeOffset.Now,
                     ActiveTo = DateTimeOffset.Now.AddYears(20),
                     IsActive = true,
                     IsDeleted = false,
                     DateCreated = DateTimeOffset.UtcNow,
-                    CreatedBy = 1,
                 });
 
                 myDbContext.SaveChanges();
@@ -35,13 +33,11 @@ namespace Botzilla.Api.SeedData.TemporarySeed
                 {
                     Name = "Serbia",
                     IsPrimary = false,
-                    TrackingState = TrackingState.Added,
                     ActiveFrom = DateTimeOffset.Now,
                     ActiveTo = DateTimeOffset.Now.AddYears(20),
                     IsActive = true,
                     IsDeleted = false,
                     DateCreated = DateTimeOffset.UtcNow,
-                    CreatedBy = 1,
                 });
 
                 myDbContext.SaveChanges();

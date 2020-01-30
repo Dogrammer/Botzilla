@@ -1,7 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
+using AutoMapper;
+using AutoMapper.QueryableExtensions;
+using Botzilla.Core.Abstractions;
+using Botzilla.Core.CreateRequestModels;
+using Botzilla.Core.Services;
+using Botzilla.Core.UpdateRequestModels;
+using Botzilla.Core.ViewModels;
 using Botzilla.Domain.Domain;
 using Botzilla.Infrastructure.Context;
 using Microsoft.AspNetCore.Http;
@@ -14,42 +21,176 @@ namespace Botzilla.Api.Controllers
     [ApiController]
     public class CountryController : ControllerBase
     {
-        private readonly ApplicationDbContext _context;
-        public CountryController(ApplicationDbContext context)
-        {
-            _context = context;
+        //private readonly IUnitOfWork _unitOfWork;
+        private readonly IMapper _mapper;
+        private readonly ICountryService _countryService;
 
-        }
-        
-        // [AllowAnonymous]
-        [HttpGet]
-        // [Authorize]
-        // [Authorize(Roles = "Admin")]
-        public async Task<ActionResult<IEnumerable<Country>>> GetCountries()
+        public CountryController(
+            IMapper mapper,
+            ICountryService countryService
+            )
         {
-            var countries = await _context.Countries.ToListAsync();
+            _mapper = mapper;
+            //_unitOfWork = unitOfWork;
+            _countryService = countryService;
+        }
+
+        [HttpGet]
+        [Route("getCountries")]
+        public async Task<IActionResult> GetCountriesAsync()
+        {
+            var countries = await _countryService
+                .Queryable()
+                .AsNoTracking()
+                .Where(c => !c.IsDeleted)
+                .ProjectTo<CountryViewModel>(configuration: _mapper.ConfigurationProvider)
+                .ToListAsync();
 
             return Ok(countries);
         }
 
         [HttpPost]
-        public async Task<ActionResult<Country>> AddCountry([FromBody]Country country)
+        public async Task<ActionResult> AddCountry(CreateCountryRequest request)
         {
-            await _context.AddAsync(country);
-            await _context.SaveChangesAsync();
+            var existing = await _countryService
+                .Queryable()
+                .Where(x => x.Name == request.Name && !x.IsDeleted)
+                .AsNoTracking()
+                .SingleOrDefaultAsync();
 
-            return NoContent();
+            if (existing == null)
+            {
+                var domain = _mapper.Map<Country>(request);
+                _countryService.Add(domain);
+
+                _countryService.Save();
+            }
+
+            var newlyAdded = await _countryService
+                .Queryable()
+                .AsNoTracking()
+                .Where(py =>  py.Name.ToUpper() == request.Name.ToUpper())
+                .SingleOrDefaultAsync();
+
+            return Ok(newlyAdded);
+            
         }
 
-        [HttpDelete("{id}")]
-        public async Task<ActionResult<Country>> RemoveCountry(int id)
+
+
+        //[HttpDelete("{id}")]
+        //public async Task<ActionResult<Country>> RemoveCountry(int id)
+        //{
+        //    //var country = await _context.Countries.FirstOrDefaultAsync(c => c.Id == id);
+
+        //    //_context.Remove(country);
+        //    //await _context.SaveChangesAsync();
+
+        //    return NoContent();
+        //}
+
+        [HttpDelete("{id}", Name = nameof(DeleteCountryAsync))]
+        [Produces(typeof(CountryViewModel))]
+        [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+        [ProducesResponseType(typeof(string), (int)HttpStatusCode.NotFound)]
+        [ProducesResponseType((int)HttpStatusCode.OK)]
+        public async Task<IActionResult> DeleteCountryAsync(long id)
         {
-            var country = await _context.Countries.FirstOrDefaultAsync(c => c.Id == id);
+            if (id <= 0)
+            {
+                // notify the caller that he has made a bad request
+                return BadRequest("Provided Id is not valid");
+            }
 
-            _context.Remove(country);
-            await _context.SaveChangesAsync();
+            // see if we can find that entity in the data store
+            var existing = await _countryService
+                .Queryable()
+                .AsNoTracking()
+                .Where(py => !py.IsDeleted && py.Id == id)
+                .SingleOrDefaultAsync();
 
-            return NoContent();
+            if (existing != null)
+            {
+                try
+                {
+                    await _countryService.Delete(existing.Id);
+
+                    await _countryService.Save();
+                }
+                catch (Exception ex)
+                {
+                    // an exception has hapenned, notify caller
+                    return BadRequest("Exception: " + ex.Message);
+                }
+            }
+            else
+            {
+                // existing item was not found, notify caller
+                return NotFound("Existing item not found");
+            }
+
+            return Ok("Item: " + existing.Name + "is deleted");
+        }
+
+        [HttpPut("{id}", Name = nameof(EditCountryAsync))]
+        [Produces(typeof(CountryViewModel))]
+        [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+        [ProducesResponseType(typeof(string), (int)HttpStatusCode.NotFound)]
+        [ProducesResponseType((int)HttpStatusCode.OK)]
+        public async Task<IActionResult> EditCountryAsync(long id, [FromBody]UpdateCountryRequest request)
+        {
+            if (id <= 0)
+            {
+                // notify the caller that he has made a bad request
+                return BadRequest("Provided Id is not valid");
+            }
+
+            // check to see if the [UpdatePedagogicalYearRequest] request model is valid
+            if (!ModelState.IsValid)
+                return Ok(ModelState.GetErrorMessages());
+            //return Ok(FleksbitResponse.CreateResponse(HttpStatusCode.BadRequest, ModelState.GetErrorMessages()));
+
+            // see if we can find that entity in the data store
+            var existing = await _countryService
+                .Queryable()
+                .AsNoTracking()
+                .Where(py => !py.IsDeleted && py.Id == id)
+                .SingleOrDefaultAsync();
+
+            if (existing != null)
+            {
+                var mapped = _mapper.Map<Country>(request);
+                mapped.Id = id;
+
+                try
+                {
+                    _countryService.Update(mapped);
+
+                    _countryService.Save();
+
+                }
+                catch (Exception ex)
+                {
+                    // an exception has hapenned, notify caller
+                    return Ok(HttpStatusCode.InternalServerError + ex.Message);
+                }
+            }
+            else
+            {
+                // existing item was not found, notify caller
+                return NotFound("Item was not found in data store");
+            }
+
+            // return the newly updated entity to the caller, in the form of a view model
+            var updated = await _countryService
+                .Queryable()
+                .AsNoTracking()
+                .Where(py => !py.IsDeleted && py.Id == request.Id)
+                .SingleOrDefaultAsync();
+
+            var mapVmAfter = _mapper.Map<CountryViewModel>(updated);
+
+            return Ok(mapVmAfter);
         }
     }
 }

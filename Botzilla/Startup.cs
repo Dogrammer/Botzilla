@@ -4,6 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
+using Botzilla.Core.Abstractions;
+using Botzilla.Core.Repository;
+using Botzilla.Core.Repository.RepositoryImplementation;
+using Botzilla.Core.Services;
 using Botzilla.Domain.Domain;
 using Botzilla.Infrastructure.Context;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -44,6 +48,24 @@ namespace Botzilla
             //services.AddScoped<RoleManager<Role>>();
 
             services.AddControllers();
+
+            //services
+            services.AddScoped<ICountryService, CountryService>();
+            //services.AddScoped<IUnitOfWork, UnitOfWork>();
+
+
+            //repositories
+            services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+
+            var config = new MapperConfiguration(cfg =>
+            {
+                cfg.AddMaps(new[] {
+                    "Botzilla.Core"
+                });
+            });
+
+            IMapper mapper = config.CreateMapper();
+            services.AddSingleton(mapper);
 
             IdentityBuilder builder = services.AddIdentityCore<User>(opt =>
             {

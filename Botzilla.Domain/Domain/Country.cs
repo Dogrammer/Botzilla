@@ -23,6 +23,7 @@ namespace Botzilla.Domain.Domain
 
         [MaxLength(250, ErrorMessage = "The Country description must be between 2 and 250 characters"), MinLength(2)]
         public string Description { get; set; }
+        
         public bool IsPrimary { get; set; }
     }
 }
