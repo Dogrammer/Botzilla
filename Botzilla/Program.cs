@@ -2,8 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Botzilla.Domain.Domain;
 using Botzilla.Infrastructure.Context;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -44,9 +46,12 @@ namespace Botzilla
                 //IdentitySeed.SeedRoles(roleManager);
 
                 var myDbContext = newScope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+                var roleManager = newScope.ServiceProvider.GetRequiredService<RoleManager<Role>>();
 
 
                 Api.SeedData.TemporarySeed.CountrySeed.SeedTestDataViaDbContext(myDbContext);
+                Api.SeedData.ConstantSeed.RoleSeed.SeedTestDataViaDbContext(roleManager);
+
 
                 try
                 {

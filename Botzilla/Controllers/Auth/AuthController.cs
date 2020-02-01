@@ -86,12 +86,16 @@ namespace Botzilla.Api.Controllers
 
             if (ModelState.IsValid)
             {
+                input.Role = "PremiumUser";
                 //var user = new IdentityUser { UserName = input.Email, Email = input.Email };
                 //var user = new User { UserName = input.Email, Email = input.Email };
                 var mappedUser = _mapper.Map<User>(input);
                 mappedUser.Email = input.Email;
                 mappedUser.UserName = input.Email;
                 var result = await _userManager.CreateAsync(mappedUser, input.Password);
+
+                await _userManager.AddToRoleAsync(mappedUser, input.Role);
+
                 if (result.Succeeded)
                 {
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(mappedUser);
