@@ -5,11 +5,11 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Text;
-using IdentityDbContext = Microsoft.AspNetCore.Identity.EntityFrameworkCore.IdentityDbContext;
 
 namespace Botzilla.Infrastructure.Context
 {
-    public class ApplicationDbContext : IdentityDbContext<User, Role, int>
+    //public class ApplicationDbContext : IdentityDbContext<User, Role, int>
+    public class ApplicationDbContext : Microsoft.AspNetCore.Identity.EntityFrameworkCore.IdentityDbContext<User, Role, int>
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
         public DbSet<User> AuthUser { get; set; }
@@ -17,6 +17,5 @@ namespace Botzilla.Infrastructure.Context
         public DbSet<Article> Articles { get; set; }
         public DbSet<Lection> Lections { get; set; }
         public DbSet<Section> Sections { get; set; }
-
     }
 }

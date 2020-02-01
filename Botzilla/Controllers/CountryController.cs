@@ -129,7 +129,7 @@ namespace Botzilla.Api.Controllers
                 return NotFound("Existing item not found");
             }
 
-            return Ok("Item: " + existing.Name + "is deleted");
+            return Ok("Item: " + existing.Name + " is deleted");
         }
 
         [HttpPut("{id}", Name = nameof(EditCountryAsync))]
@@ -164,9 +164,9 @@ namespace Botzilla.Api.Controllers
 
                 try
                 {
-                    _countryService.Update(mapped);
+                    await _countryService.Update(mapped);
 
-                    _countryService.Save();
+                    await _countryService.Save();
 
                 }
                 catch (Exception ex)

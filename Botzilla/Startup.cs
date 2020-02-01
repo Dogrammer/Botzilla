@@ -81,26 +81,41 @@ namespace Botzilla
             // builder.AddEntityFrameworkStores<RobotlijaContext>();
             builder.AddSignInManager<SignInManager<User>>();
 
-            services.AddAuthentication(x =>
+            services.AddAuthentication().AddJwtBearer(options =>
             {
-                x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-                x.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-
-            }).AddJwtBearer(x =>
-            {
-                x.RequireHttpsMetadata = false;
-                x.SaveToken = false;
-                x.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
+                options.SaveToken = true;
+                options.RequireHttpsMetadata = false;
+                options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters()
                 {
-                    ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII
-                        .GetBytes(Configuration.GetSection("AppSettings:Token").Value)),
-                    ValidateIssuer = false,
-                    ValidateAudience = false,
-                    ClockSkew = TimeSpan.Zero
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidAudience = "https://spark.ooo",
+                    ValidIssuer = "https://spark.ooo",
+                    IssuerSigningKey = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes("A-VERY-STRONG-KEY-HERE"))
                 };
+
             });
+
+            //services.AddAuthentication(x =>
+            //{
+            //    x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+            //    x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            //    x.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+
+            //}).AddJwtBearer(x =>
+            //{
+            //    x.RequireHttpsMetadata = false;
+            //    x.SaveToken = false;
+            //    x.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
+            //    {
+            //        ValidateIssuerSigningKey = true,
+            //        IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII
+            //            .GetBytes(Configuration.GetSection("AppSettings:Token").Value)),
+            //        ValidateIssuer = false,
+            //        ValidateAudience = false,
+            //        ClockSkew = TimeSpan.Zero
+            //    };
+            //});
 
 
 
@@ -159,9 +174,10 @@ namespace Botzilla
 
 
                 app.UseRouting();
-
-                app.UseCors(MyAllowSpecificOrigins);
-            app.UseAuthentication();
+            
+                 //app.UseIdentity();
+                    app.UseCors(MyAllowSpecificOrigins);
+                app.UseAuthentication();
                 app.UseAuthorization();
 
                 app.UseEndpoints(endpoints =>
