@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -12,7 +13,9 @@ using Botzilla.Domain.Domain;
 using Botzilla.Infrastructure.Context;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -43,11 +46,12 @@ namespace Botzilla
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddIdentity<User, Role>()
-.AddEntityFrameworkStores<ApplicationDbContext>()
-.AddDefaultTokenProviders();
+                    .AddEntityFrameworkStores<ApplicationDbContext>()
+                    .AddDefaultTokenProviders();
             //services.AddScoped<RoleManager<Role>>();
 
             services.AddControllers();
+            services.AddCors();
 
             //services
             services.AddScoped<ICountryService, CountryService>();
@@ -117,23 +121,6 @@ namespace Botzilla
             //    };
             //});
 
-
-
-            
-
-
-            //enable cross origin requests
-            services.AddCors(options =>
-            {
-                options.AddPolicy(MyAllowSpecificOrigins,
-                builder =>
-                {
-                    builder.WithOrigins("http://localhost:4200",
-                                        "https://localhost:4200");
-                });
-            });
-
-
             services.AddAutoMapper(typeof(Startup));
 
             //swagger configuration
@@ -158,6 +145,7 @@ namespace Botzilla
                 {
                     app.UseDeveloperExceptionPage();
                 }
+               
 
                 app.UseHttpsRedirection();
 
@@ -172,12 +160,14 @@ namespace Botzilla
 
                 });
 
+            app.UseRouting();
 
-                app.UseRouting();
+            //app.UseIdentity();app.UseCors(
+            app.UseCors(
+                options => options.SetIsOriginAllowed(x => _ = true).AllowAnyMethod().AllowAnyHeader().AllowCredentials()
+            ); //This needs to set everything allowed
             
-                 //app.UseIdentity();
-                    app.UseCors(MyAllowSpecificOrigins);
-                app.UseAuthentication();
+            app.UseAuthentication();
                 app.UseAuthorization();
 
                 app.UseEndpoints(endpoints =>

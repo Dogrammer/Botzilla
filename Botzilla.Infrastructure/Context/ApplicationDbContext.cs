@@ -14,7 +14,7 @@ namespace Botzilla.Infrastructure.Context
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
         public DbSet<User> AuthUser { get; set; }
         public DbSet<Country> Countries { get; set; }
-        public DbSet<Article> Articles { get; set; }
+        public DbSet<News> Articles { get; set; }
         public DbSet<Lection> Lections { get; set; }
         public DbSet<Section> Sections { get; set; }
     }

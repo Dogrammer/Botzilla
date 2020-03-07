@@ -1,5 +1,6 @@
 ﻿using Botzilla.Core.Repository;
 using Botzilla.Core.Repository.RepositoryImplementation;
+using Botzilla.Core.Services.ServiceContract;
 using Botzilla.Domain.Domain;
 using Botzilla.Infrastructure.Context;
 using System;
@@ -9,14 +10,15 @@ using System.Threading.Tasks;
 
 namespace Botzilla.Core.Services
 {
-    public class ICountryService : Repository<Country>
+    public interface ICountryService : IService<Country>
     {
-        private readonly ApplicationDbContext _context;
+        //private readonly ApplicationDbContext _context;
 
-        public ICountryService(ApplicationDbContext context) : base (context)
-        {
-            _context = context;
-        }
+        //public ICountryService(ApplicationDbContext context) : base (context)
+        //{
+            //_context = context;
+
+
 
 
     }

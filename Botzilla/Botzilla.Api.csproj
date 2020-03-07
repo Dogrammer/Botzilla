@@ -26,4 +26,8 @@
     <ProjectReference Include="..\Botzilla.Infrastructure\Botzilla.Infrastructure.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Extensions\" />
+  </ItemGroup>
+
 </Project>

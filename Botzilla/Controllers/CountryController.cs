@@ -50,6 +50,7 @@ namespace Botzilla.Api.Controllers
         }
 
         [HttpPost]
+        [Route("countries")]
         public async Task<ActionResult> AddCountry(CreateCountryRequest request)
         {
             var existing = await _countryService
@@ -75,19 +76,6 @@ namespace Botzilla.Api.Controllers
             return Ok(newlyAdded);
             
         }
-
-
-
-        //[HttpDelete("{id}")]
-        //public async Task<ActionResult<Country>> RemoveCountry(int id)
-        //{
-        //    //var country = await _context.Countries.FirstOrDefaultAsync(c => c.Id == id);
-
-        //    //_context.Remove(country);
-        //    //await _context.SaveChangesAsync();
-
-        //    return NoContent();
-        //}
 
         [HttpDelete("{id}", Name = nameof(DeleteCountryAsync))]
         [Produces(typeof(CountryViewModel))]
@@ -129,7 +117,8 @@ namespace Botzilla.Api.Controllers
                 return NotFound("Existing item not found");
             }
 
-            return Ok("Item: " + existing.Name + " is deleted");
+            //return Ok("Item: " + existing.Name + " is deleted");
+            return NoContent();
         }
 
         [HttpPut("{id}", Name = nameof(EditCountryAsync))]

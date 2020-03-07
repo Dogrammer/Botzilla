@@ -7,15 +7,18 @@ using System.Text;
 
 namespace Botzilla.Core.Services
 {
-    public class CountryService : ICountryService
+    public class CountryService : Service<Country>, ICountryService
     {
         private readonly ApplicationDbContext _context;
 
-        public CountryService(ApplicationDbContext context) : base(context)
+        //public CountryService(ApplicationDbContext context) : base(context)
+        //{
+        //    _context = context;
+        //}
+        public CountryService()
         {
-            _context = context;
-        }
 
+        }
 
     }
 
