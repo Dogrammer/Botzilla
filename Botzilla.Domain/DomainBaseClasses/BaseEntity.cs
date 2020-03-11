@@ -7,7 +7,7 @@ using System.Text;
 
 namespace Botzilla.Domain.DomainBaseClasses
 {
-    public class BaseEntity : ISoftDeletableEntity
+    public class BaseEntity : ISoftDeletableEntity, ITrackable
     {
         public BaseEntity()
         {
@@ -19,6 +19,12 @@ namespace Botzilla.Domain.DomainBaseClasses
         public int? DeletedBy { get; set; }
         public DateTimeOffset DateCreated { get; set; }
         public DateTimeOffset? LastModified { get; set; }
+
+        [NotMapped]
+        public TrackingState TrackingState { get; set; }
+
+        [NotMapped]
+        public ICollection<string> ModifiedProperties { get; set; }
 
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]

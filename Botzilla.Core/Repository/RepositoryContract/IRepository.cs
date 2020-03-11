@@ -9,16 +9,15 @@ using System.Threading.Tasks;
 
 namespace Botzilla.Core.Repository
 {
-    public interface IRepository<T> where T: class
+    public interface IRepository<TEntity> where TEntity: class
     {
-            Task<IEnumerable<T>> GetAll();
-            Task<T> Get(long id);
-            Task<T> Add(T entity);
-            Task<T> Update(T entity);
-            Task<T> Delete(long id);
-            Task Save();
-            IQueryable<T> Queryable();
-
+        void Attach(TEntity item);
+        void Detach(TEntity item);
+        void Insert(TEntity item);
+        void Update(TEntity item);
+        void Delete(TEntity item);
+        Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
+        IQueryable<TEntity> Queryable();
 
     }
 }

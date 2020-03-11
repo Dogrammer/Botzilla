@@ -52,14 +52,20 @@ namespace Botzilla
 
             services.AddControllers();
             services.AddCors();
+            services.AddScoped<DbContext, ApplicationDbContext>();
 
             //services
             services.AddScoped<ICountryService, CountryService>();
+            //services.AddSingleton<CountryService>();
             //services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 
             //repositories
-            services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+            //services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+            //services.AddScoped(typeof(ITrackableRepository<>), typeof(TrackableRepository<>));
+            services.AddTransient<ITrackableRepository<Country>, TrackableRepository<Country>>();
+
+
 
             var config = new MapperConfiguration(cfg =>
             {

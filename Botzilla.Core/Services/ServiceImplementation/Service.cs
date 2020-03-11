@@ -1,48 +1,56 @@
-﻿using Botzilla.Core.Services.ServiceContract;
+﻿using Botzilla.Core.Repository.RepositoryImplementation;
+using Botzilla.Core.Services.ServiceContract;
 using Botzilla.Domain.DomainInterfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Botzilla.Core.Services.ServiceImplementation
 {
     public abstract class Service<TEntity> : IService<TEntity> where TEntity : class, ITrackable
     {
-        public Task<TEntity> Add(TEntity entity)
-        {
-            throw new NotImplementedException();
-        }
+        protected readonly ITrackableRepository<TEntity> Repository;
 
-        public Task<TEntity> Delete(long id)
-        {
-            throw new NotImplementedException();
-        }
+        protected Service(ITrackableRepository<TEntity> repository)
+            => Repository = repository;
 
-        public Task<TEntity> Get(long id)
-        {
-            throw new NotImplementedException();
-        }
+        public virtual void Attach(TEntity item)
+           => Repository.Attach(item);
 
-        public Task<IEnumerable<TEntity>> GetAll()
-        {
-            throw new NotImplementedException();
-        }
+        public virtual void Delete(TEntity item)
+            => Repository.Delete(item);
 
-        public IQueryable<TEntity> Queryable()
-        {
-            throw new NotImplementedException();
-        }
+        public virtual void Insert(TEntity item)
+            => Repository.Insert(item);
 
-        public Task Save()
-        {
-            throw new NotImplementedException();
-        }
+        public virtual void Detach(TEntity item)
+            => Repository.Detach(item);
 
-        public Task<TEntity> Update(TEntity entity)
-        {
-            throw new NotImplementedException();
-        }
+        public virtual void Update(TEntity item)
+            => Repository.Update(item);
+
+        public virtual IQueryable<TEntity> Queryable()
+            => Repository.Queryable();
+
+        public virtual void ApplyChanges(params TEntity[] entities)
+            => Repository.ApplyChanges(entities);
+
+        public virtual void AcceptChanges(params TEntity[] entities)
+            => Repository.AcceptChanges(entities);
+
+        public virtual void DetachEntities(params TEntity[] entities)
+            => Repository.DetachEntities(entities);
+
+        public virtual async Task LoadRelatedEntities(params TEntity[] entities)
+            => await Repository.LoadRelatedEntities(entities);
+
+        public virtual async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+            => await SaveChangesAsync(cancellationToken);
+
     }
+
+    
 }

@@ -10,17 +10,8 @@ using System.Threading.Tasks;
 
 namespace Botzilla.Core.Services.ServiceContract
 {
-    public interface INewsService : IService<DocumentBase>
+    public interface INewsService : IService<News>
     {
-        private readonly ApplicationDbContext _context;
-
-        public INewsService(ApplicationDbContext context) : base(context)
-        {
-            _context = context;
-        }
-
         Task AddImageForNews(CreateNewsRequest request);
-
-
     }
 }

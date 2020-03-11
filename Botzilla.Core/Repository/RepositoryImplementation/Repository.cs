@@ -4,78 +4,42 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Botzilla.Core.Repository.RepositoryImplementation
 {
     public class Repository<TEntity> : IRepository<TEntity> where TEntity : class
     {
-        private readonly ApplicationDbContext _context;
-        protected Microsoft.EntityFrameworkCore.DbSet<TEntity> Set { get; }
+        
 
-
-        public Repository(ApplicationDbContext context)
+        public Repository(DbContext context)
         {
-            _context = context;
+            Context = context;
             Set = context.Set<TEntity>();
         }
-            public async Task<TEntity> Add(TEntity entity)
-            {
-            _context.Set<TEntity>().Add(entity);
-                await _context.SaveChangesAsync();
-                return entity;
-            }
 
-            public async Task<TEntity> Delete(long id)
-            {
-                var entity = await _context.Set<TEntity>().FindAsync(id);
-                if (entity == null)
-                {
-                    return entity;
-                }
+        protected DbContext Context { get; }
+        protected DbSet<TEntity> Set { get; }
 
-            _context.Set<TEntity>().Remove(entity);
-                await _context.SaveChangesAsync();
+        public virtual void Attach(TEntity item)
+            => Set.Attach(item);
 
-                return entity;
-            }
+        public virtual void Detach(TEntity item)
+            => Context.Entry(item).State = EntityState.Detached;
 
-            public async Task<TEntity> Get(long id)
-            {
-                return await _context.Set<TEntity>().FindAsync(id);
-            }
+        public virtual void Insert(TEntity item)
+            => Context.Entry(item).State = EntityState.Added;
 
-            public async Task<IEnumerable<TEntity>> GetAll()
-            {
-            return await _context.Set<TEntity>().ToListAsync();
-            }
+        public virtual void Update(TEntity item)
+            => Context.Entry(item).State = EntityState.Modified;
 
-        public async Task Save()
-        {
-            await _context.SaveChangesAsync();
-        }
+        public virtual void Delete(TEntity item)
+            => Context.Entry(item).State = EntityState.Deleted;
 
         public virtual IQueryable<TEntity> Queryable() => Set;
 
-
-        //public async Task<TEntity> Update(TEntity entity)
-        //    {
-        //    _context.Set<TEntity>().Attach(entity);/*Entry(entity).. = EntityState.Modified;*/
-        //        await _context.SaveChangesAsync();
-        //        return entity;
-        //    }
-
-        public async Task<TEntity> Update(TEntity entity)
-        {
-            // _context.Set<T>().Attach(entity);
-            _context.Entry(entity).State = EntityState.Modified;
-            await Save();
-
-            return entity;
-
-
-        }
-
-
+        public virtual async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+            => await SaveChangesAsync(cancellationToken);
     }
 }

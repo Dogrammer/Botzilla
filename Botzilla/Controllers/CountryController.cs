@@ -62,9 +62,9 @@ namespace Botzilla.Api.Controllers
             if (existing == null)
             {
                 var domain = _mapper.Map<Country>(request);
-                _countryService.Add(domain);
+                _countryService.Insert(domain);
 
-                _countryService.Save();
+                var save = await _countryService.SaveChangesAsync();
             }
 
             var newlyAdded = await _countryService
@@ -101,9 +101,10 @@ namespace Botzilla.Api.Controllers
             {
                 try
                 {
-                    await _countryService.Delete(existing.Id);
+                    _countryService.Delete(existing);
 
-                    await _countryService.Save();
+                    var save = await _countryService.SaveChangesAsync();
+
                 }
                 catch (Exception ex)
                 {
@@ -153,9 +154,9 @@ namespace Botzilla.Api.Controllers
 
                 try
                 {
-                    await _countryService.Update(mapped);
+                    _countryService.Update(mapped);
 
-                    await _countryService.Save();
+                    var save = await _countryService.SaveChangesAsync();
 
                 }
                 catch (Exception ex)

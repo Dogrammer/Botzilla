@@ -10,16 +10,8 @@ using System.Threading.Tasks;
 
 namespace Botzilla.Core.Services
 {
-    public interface ICountryService : IService<Country>
+    public interface ICountryService : IService<Country> 
     {
-        //private readonly ApplicationDbContext _context;
-
-        //public ICountryService(ApplicationDbContext context) : base (context)
-        //{
-            //_context = context;
-
-
-
 
     }
 }

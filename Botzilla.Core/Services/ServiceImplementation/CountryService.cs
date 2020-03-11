@@ -1,4 +1,6 @@
 ﻿using Botzilla.Core.Repository;
+using Botzilla.Core.Repository.RepositoryImplementation;
+using Botzilla.Core.Services.ServiceImplementation;
 using Botzilla.Domain.Domain;
 using Botzilla.Infrastructure.Context;
 using System;
@@ -9,16 +11,11 @@ namespace Botzilla.Core.Services
 {
     public class CountryService : Service<Country>, ICountryService
     {
-        private readonly ApplicationDbContext _context;
-
-        //public CountryService(ApplicationDbContext context) : base(context)
-        //{
-        //    _context = context;
-        //}
-        public CountryService()
+        public CountryService(ITrackableRepository<Country> repository) : base(repository)
         {
 
         }
+
 
     }
 
