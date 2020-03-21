@@ -1,12 +1,11 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using System;
 using System.Collections.Generic;
 using System.Text;
-using Microsoft.AspNetCore.Http;
 
-
-namespace Botzilla.Core.CreateRequestModels
+namespace Botzilla.Core.UpdateRequestModels
 {
-    public class CreateNewsRequest
+    public class UpdateNewsRequest
     {
         public long Id { get; set; }
         public IFormFile File { get; set; }

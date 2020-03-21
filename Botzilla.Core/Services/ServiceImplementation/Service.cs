@@ -50,6 +50,11 @@ namespace Botzilla.Core.Services.ServiceImplementation
         public virtual async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
             => await SaveChangesAsync(cancellationToken);
 
+        public async Task Save()
+        {
+            await Repository.Save();
+        }
+
     }
 
     

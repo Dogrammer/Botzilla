@@ -9,7 +9,10 @@ using Botzilla.Core.Abstractions;
 using Botzilla.Core.Repository;
 using Botzilla.Core.Repository.RepositoryImplementation;
 using Botzilla.Core.Services;
+using Botzilla.Core.Services.ServiceContract;
+using Botzilla.Core.Services.ServiceImplementation;
 using Botzilla.Domain.Domain;
+using Botzilla.Domain.DomainBaseClasses;
 using Botzilla.Infrastructure.Context;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
@@ -56,6 +59,15 @@ namespace Botzilla
 
             //services
             services.AddScoped<ICountryService, CountryService>();
+            services.AddScoped<INewsService, NewsService>();
+            services.AddScoped<IFileService, FileService>();
+            services.AddScoped<IDocumentService, DocumentService>();
+            services.AddScoped<IEmailContactService, EmailContactService>();
+            services.AddScoped<IEmailSubjectService, EmailSubjectService>();
+
+
+            //services.AddScoped</*IFileService*/, FileService>();
+
             //services.AddSingleton<CountryService>();
             //services.AddScoped<IUnitOfWork, UnitOfWork>();
 
@@ -64,8 +76,14 @@ namespace Botzilla
             //services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
             //services.AddScoped(typeof(ITrackableRepository<>), typeof(TrackableRepository<>));
             services.AddTransient<ITrackableRepository<Country>, TrackableRepository<Country>>();
+            services.AddTransient<ITrackableRepository<News>, TrackableRepository<News>>();
+            services.AddTransient<ITrackableRepository<DocumentBase>, TrackableRepository<DocumentBase>>();
+            services.AddTransient<ITrackableRepository<NewsImage>, TrackableRepository<NewsImage>>();
+            services.AddTransient<ITrackableRepository<EmailContact>, TrackableRepository<EmailContact>>();
+            services.AddTransient<ITrackableRepository<EmailSubject>, TrackableRepository<EmailSubject>>();
 
 
+            services.Configure<DocumentSettings>(Configuration.GetSection(nameof(DocumentSettings)));
 
             var config = new MapperConfiguration(cfg =>
             {

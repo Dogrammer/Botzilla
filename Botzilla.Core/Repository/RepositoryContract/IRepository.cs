@@ -17,6 +17,8 @@ namespace Botzilla.Core.Repository
         void Update(TEntity item);
         void Delete(TEntity item);
         Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
+        Task Save();
+
         IQueryable<TEntity> Queryable();
 
     }

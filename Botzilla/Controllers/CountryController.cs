@@ -31,7 +31,6 @@ namespace Botzilla.Api.Controllers
             )
         {
             _mapper = mapper;
-            //_unitOfWork = unitOfWork;
             _countryService = countryService;
         }
 
@@ -64,7 +63,7 @@ namespace Botzilla.Api.Controllers
                 var domain = _mapper.Map<Country>(request);
                 _countryService.Insert(domain);
 
-                var save = await _countryService.SaveChangesAsync();
+                 await _countryService.Save();
             }
 
             var newlyAdded = await _countryService
@@ -103,7 +102,7 @@ namespace Botzilla.Api.Controllers
                 {
                     _countryService.Delete(existing);
 
-                    var save = await _countryService.SaveChangesAsync();
+                    await _countryService.Save();
 
                 }
                 catch (Exception ex)
@@ -156,7 +155,7 @@ namespace Botzilla.Api.Controllers
                 {
                     _countryService.Update(mapped);
 
-                    var save = await _countryService.SaveChangesAsync();
+                    await _countryService.Save();
 
                 }
                 catch (Exception ex)

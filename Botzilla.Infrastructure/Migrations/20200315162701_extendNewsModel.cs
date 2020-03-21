@@ -2,30 +2,30 @@
 
 namespace Botzilla.Infrastructure.Migrations
 {
-    public partial class seeders : Migration
+    public partial class extendNewsModel : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AddColumn<string>(
-                name: "Role",
-                table: "AspNetUsers",
+                name: "Content",
+                table: "Articles",
                 nullable: true);
 
             migrationBuilder.AddColumn<string>(
-                name: "Description",
-                table: "AspNetRoles",
+                name: "Title",
+                table: "Articles",
                 nullable: true);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropColumn(
-                name: "Role",
-                table: "AspNetUsers");
+                name: "Content",
+                table: "Articles");
 
             migrationBuilder.DropColumn(
-                name: "Description",
-                table: "AspNetRoles");
+                name: "Title",
+                table: "Articles");
         }
     }
 }

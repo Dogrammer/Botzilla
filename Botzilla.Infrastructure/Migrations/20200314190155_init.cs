@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Botzilla.Infrastructure.Migrations
 {
-    public partial class initial : Migration
+    public partial class init : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -13,7 +13,13 @@ namespace Botzilla.Infrastructure.Migrations
                 {
                     Id = table.Column<long>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(nullable: true)
+                    IsDeleted = table.Column<bool>(nullable: false),
+                    DateDeleted = table.Column<DateTimeOffset>(nullable: true),
+                    DeletedBy = table.Column<int>(nullable: true),
+                    DateCreated = table.Column<DateTimeOffset>(nullable: false),
+                    LastModified = table.Column<DateTimeOffset>(nullable: true),
+                    ImageTitle = table.Column<string>(nullable: true),
+                    ImageData = table.Column<byte[]>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -28,7 +34,8 @@ namespace Botzilla.Infrastructure.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(maxLength: 256, nullable: true),
                     NormalizedName = table.Column<string>(maxLength: 256, nullable: true),
-                    ConcurrencyStamp = table.Column<string>(nullable: true)
+                    ConcurrencyStamp = table.Column<string>(nullable: true),
+                    Description = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -58,7 +65,8 @@ namespace Botzilla.Infrastructure.Migrations
                     FirstName = table.Column<string>(nullable: true),
                     LastName = table.Column<string>(nullable: true),
                     FacebookId = table.Column<long>(nullable: true),
-                    PictureUrl = table.Column<string>(nullable: true)
+                    PictureUrl = table.Column<string>(nullable: true),
+                    Role = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -86,6 +94,31 @@ namespace Botzilla.Infrastructure.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Countries", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Images",
+                columns: table => new
+                {
+                    Id = table.Column<long>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    IsDeleted = table.Column<bool>(nullable: false),
+                    DateDeleted = table.Column<DateTimeOffset>(nullable: true),
+                    DeletedBy = table.Column<int>(nullable: true),
+                    DateCreated = table.Column<DateTimeOffset>(nullable: false),
+                    LastModified = table.Column<DateTimeOffset>(nullable: true),
+                    IsActive = table.Column<bool>(nullable: false),
+                    ActiveFrom = table.Column<DateTimeOffset>(nullable: false),
+                    ActiveTo = table.Column<DateTimeOffset>(nullable: true),
+                    Name = table.Column<string>(maxLength: 50, nullable: false),
+                    ContentType = table.Column<string>(nullable: false),
+                    FilePath = table.Column<string>(nullable: false),
+                    FileSize = table.Column<long>(nullable: false),
+                    Extension = table.Column<string>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Images", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -282,6 +315,9 @@ namespace Botzilla.Infrastructure.Migrations
 
             migrationBuilder.DropTable(
                 name: "Countries");
+
+            migrationBuilder.DropTable(
+                name: "Images");
 
             migrationBuilder.DropTable(
                 name: "Lections");

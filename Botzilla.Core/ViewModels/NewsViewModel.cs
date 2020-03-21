@@ -6,9 +6,9 @@ namespace Botzilla.Core.ViewModels
 {
     public class NewsViewModel
     {
-        public string Base64 { get; set; }
-        public string FileName { get; set; }
-        public string ContentType { get; set; }
-        public string Extension { get; set; }
+        public string Title { get; set; }
+        public string Content { get; set; }
+        public string ImageTitle { get; set; }
+        public byte[] ImageData { get; set; }
     }
 }
