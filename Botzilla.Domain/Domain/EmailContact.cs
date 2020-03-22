@@ -10,7 +10,9 @@ namespace Botzilla.Domain.Domain
         public string To { get; set; }
         public string Body { get; set; }
         public string EmailAddress { get; set; }
+        public string NameOfSender { get; set; }
         public EmailSubject EmailSubject { get; set; }
         public long EmailSubjectId { get; set; }
+        public bool IsReplied { get; set; }
     }
 }

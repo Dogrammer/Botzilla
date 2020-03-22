@@ -54,7 +54,7 @@ namespace Botzilla.Api.Controllers
             await _emailContactService.Save();
 
             MailMessage mail = new MailMessage();
-            mail.To.Add(request.To);
+            mail.To.Add(request.EmailAddress);
             mail.Subject = subject.Name;
             mail.Body = request.Body;
             mail.From = new MailAddress("marjanovicnevio@gmail.com");
@@ -67,6 +67,35 @@ namespace Botzilla.Api.Controllers
             smtp.Send(mail);
 
             return Ok(domain);
+        }
+
+        [HttpPost]
+        [Route("replyEmailContact")]
+        public async Task<ActionResult> ReplyEmailContact(ReplyEmailContactRequest request)
+        {
+            var emailToReply = await _emailContactService
+                .Queryable()
+                .Where(x => x.Id == request.EmailContactId && !x.IsDeleted)
+                .SingleOrDefaultAsync();
+
+            MailMessage mail = new MailMessage();
+            mail.To.Add(emailToReply.EmailAddress);
+            mail.Subject = emailToReply.EmailSubject.Name;
+            mail.Body = request.Body;
+            mail.From = new MailAddress("marjanovicnevio@gmail.com");
+            mail.IsBodyHtml = false;
+            SmtpClient smtp = new SmtpClient("smtp.gmail.com");
+            smtp.Port = 587;
+            smtp.UseDefaultCredentials = true;
+            smtp.EnableSsl = true;
+            smtp.Credentials = new System.Net.NetworkCredential("marjanovicnevio@gmail.com", "dravengibsonusa123456789");
+            smtp.Send(mail);
+
+            emailToReply.IsReplied = true;
+            
+            await _emailContactService.Save();
+
+            return Ok(emailToReply);
         }
 
         //[HttpPost]
@@ -113,6 +142,20 @@ namespace Botzilla.Api.Controllers
                 .ToListAsync();
 
             return Ok(emails);
+        }
+
+        [HttpGet]
+        [Route("getEmailSubjects")]
+        public async Task<IActionResult> GetEmailSubjectsAsync()
+        {
+            var emailSubjects = await _emailSubjectService
+                .Queryable()
+                .AsNoTracking()
+                .Where(c => !c.IsDeleted)
+                .ProjectTo<EmailSubjectViewModel>(configuration: _mapper.ConfigurationProvider)
+                .ToListAsync();
+
+            return Ok(emailSubjects);
         }
 
         [HttpDelete("{id}", Name = nameof(DeleteEmailAsync))]

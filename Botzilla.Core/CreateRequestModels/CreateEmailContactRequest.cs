@@ -8,6 +8,7 @@ namespace Botzilla.Core.CreateRequestModels
     {
         public long Id { get; set; }
         public string EmailAddress { get; set; }
+        public string NameOfSender { get; set; }
         public string To { get; set; }
         public long EmailSubjectId { get; set; }
         public string Body { get; set; }

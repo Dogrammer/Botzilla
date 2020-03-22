@@ -10,6 +10,8 @@ namespace Botzilla.Core.ViewModels
         public string EmailAddress { get; set; }
         public EmailSubjectViewModel EmailSubject { get; set; }
         public string Body { get; set; }
+        public string NameOfSender { get; set; }
+
 
     }
 }
