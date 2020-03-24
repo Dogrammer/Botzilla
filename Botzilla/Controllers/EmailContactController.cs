@@ -53,18 +53,18 @@ namespace Botzilla.Api.Controllers
 
             await _emailContactService.Save();
 
-            MailMessage mail = new MailMessage();
-            mail.To.Add(request.EmailAddress);
-            mail.Subject = subject.Name;
-            mail.Body = request.Body;
-            mail.From = new MailAddress("marjanovicnevio@gmail.com");
-            mail.IsBodyHtml = false;
-            SmtpClient smtp = new SmtpClient("smtp.gmail.com");
-            smtp.Port = 587;
-            smtp.UseDefaultCredentials = true;
-            smtp.EnableSsl = true;
-            smtp.Credentials = new System.Net.NetworkCredential("marjanovicnevio@gmail.com", "dravengibsonusa123456789");
-            smtp.Send(mail);
+            //MailMessage mail = new MailMessage();
+            //mail.To.Add(request.EmailAddress);
+            //mail.Subject = subject.Name;
+            //mail.Body = request.Body;
+            //mail.From = new MailAddress("marjanovicnevio@gmail.com");
+            //mail.IsBodyHtml = false;
+            //SmtpClient smtp = new SmtpClient("smtp.gmail.com");
+            //smtp.Port = 587;
+            //smtp.UseDefaultCredentials = true;
+            //smtp.EnableSsl = true;
+            //smtp.Credentials = new System.Net.NetworkCredential("marjanovicnevio@gmail.com", "dravengibsonusa123456789");
+            //smtp.Send(mail);
 
             return Ok(domain);
         }
@@ -75,6 +75,7 @@ namespace Botzilla.Api.Controllers
         {
             var emailToReply = await _emailContactService
                 .Queryable()
+                .Include(a => a.EmailSubject)
                 .Where(x => x.Id == request.EmailContactId && !x.IsDeleted)
                 .SingleOrDefaultAsync();
 
@@ -141,7 +142,7 @@ namespace Botzilla.Api.Controllers
                 .ProjectTo<EmailContactViewModel>(configuration: _mapper.ConfigurationProvider)
                 .ToListAsync();
 
-            return Ok(emails);
+            return Ok(emails.OrderByDescending(a => a.Id));
         }
 
         [HttpGet]
