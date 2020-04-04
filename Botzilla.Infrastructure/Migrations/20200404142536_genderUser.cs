@@ -2,22 +2,21 @@
 
 namespace Botzilla.Infrastructure.Migrations
 {
-    public partial class isrepliedprop : Migration
+    public partial class genderUser : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AddColumn<bool>(
-                name: "IsReplied",
-                table: "EmailContacts",
-                nullable: false,
-                defaultValue: false);
+            migrationBuilder.AddColumn<string>(
+                name: "Gender",
+                table: "AspNetUsers",
+                nullable: true);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropColumn(
-                name: "IsReplied",
-                table: "EmailContacts");
+                name: "Gender",
+                table: "AspNetUsers");
         }
     }
 }

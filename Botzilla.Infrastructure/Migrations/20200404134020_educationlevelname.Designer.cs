@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Botzilla.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20200321102716_emailcontact")]
-    partial class emailcontact
+    [Migration("20200404134020_educationlevelname")]
+    partial class educationlevelname
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -69,6 +69,36 @@ namespace Botzilla.Infrastructure.Migrations
                     b.ToTable("Countries");
                 });
 
+            modelBuilder.Entity("Botzilla.Domain.Domain.EducationLevel", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTimeOffset>("DateCreated")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<DateTimeOffset?>("DateDeleted")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<int?>("DeletedBy")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTimeOffset?>("LastModified")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("EducationLevels");
+                });
+
             modelBuilder.Entity("Botzilla.Domain.Domain.EmailContact", b =>
                 {
                     b.Property<long>("Id")
@@ -88,13 +118,22 @@ namespace Botzilla.Infrastructure.Migrations
                     b.Property<int?>("DeletedBy")
                         .HasColumnType("int");
 
+                    b.Property<string>("EmailAddress")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<long>("EmailSubjectId")
+                        .HasColumnType("bigint");
+
                     b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsReplied")
                         .HasColumnType("bit");
 
                     b.Property<DateTimeOffset?>("LastModified")
                         .HasColumnType("datetimeoffset");
 
-                    b.Property<string>("Subject")
+                    b.Property<string>("NameOfSender")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("To")
@@ -102,7 +141,39 @@ namespace Botzilla.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("EmailSubjectId");
+
                     b.ToTable("EmailContacts");
+                });
+
+            modelBuilder.Entity("Botzilla.Domain.Domain.EmailSubject", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTimeOffset>("DateCreated")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<DateTimeOffset?>("DateDeleted")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<int?>("DeletedBy")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTimeOffset?>("LastModified")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("EmailSubjects");
                 });
 
             modelBuilder.Entity("Botzilla.Domain.Domain.Lection", b =>
@@ -223,6 +294,9 @@ namespace Botzilla.Infrastructure.Migrations
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<long?>("EducationLevelId")
+                        .HasColumnType("bigint");
+
                     b.Property<string>("Email")
                         .HasColumnType("nvarchar(256)")
                         .HasMaxLength(256);
@@ -279,6 +353,8 @@ namespace Botzilla.Infrastructure.Migrations
                         .HasMaxLength(256);
 
                     b.HasKey("Id");
+
+                    b.HasIndex("EducationLevelId");
 
                     b.HasIndex("NormalizedEmail")
                         .HasName("EmailIndex");
@@ -446,6 +522,22 @@ namespace Botzilla.Infrastructure.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens");
+                });
+
+            modelBuilder.Entity("Botzilla.Domain.Domain.EmailContact", b =>
+                {
+                    b.HasOne("Botzilla.Domain.Domain.EmailSubject", "EmailSubject")
+                        .WithMany()
+                        .HasForeignKey("EmailSubjectId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Botzilla.Domain.Domain.User", b =>
+                {
+                    b.HasOne("Botzilla.Domain.Domain.EducationLevel", "EducationLevel")
+                        .WithMany()
+                        .HasForeignKey("EducationLevelId");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>

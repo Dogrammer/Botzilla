@@ -13,5 +13,11 @@ namespace Botzilla.Domain.Domain
         public long? FacebookId { get; set; }
         public string PictureUrl { get; set; }
         public string Role { get; set; }
+
+        [ForeignKey("EducationLevelId")]
+        public EducationLevel? EducationLevel { get; set; }
+        public long? EducationLevelId { get; set; }
+        public string Gender { get; set; }
+
     }
 }

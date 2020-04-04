@@ -52,20 +52,7 @@ namespace Botzilla.Api.Controllers
             _emailContactService.Insert(domain);
 
             await _emailContactService.Save();
-
-            //MailMessage mail = new MailMessage();
-            //mail.To.Add(request.EmailAddress);
-            //mail.Subject = subject.Name;
-            //mail.Body = request.Body;
-            //mail.From = new MailAddress("marjanovicnevio@gmail.com");
-            //mail.IsBodyHtml = false;
-            //SmtpClient smtp = new SmtpClient("smtp.gmail.com");
-            //smtp.Port = 587;
-            //smtp.UseDefaultCredentials = true;
-            //smtp.EnableSsl = true;
-            //smtp.Credentials = new System.Net.NetworkCredential("marjanovicnevio@gmail.com", "dravengibsonusa123456789");
-            //smtp.Send(mail);
-
+            
             return Ok(domain);
         }
 

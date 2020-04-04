@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Botzilla.Infrastructure.Migrations
 {
-    public partial class init : Migration
+    public partial class UserDb2 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -18,8 +18,11 @@ namespace Botzilla.Infrastructure.Migrations
                     DeletedBy = table.Column<int>(nullable: true),
                     DateCreated = table.Column<DateTimeOffset>(nullable: false),
                     LastModified = table.Column<DateTimeOffset>(nullable: true),
+                    Title = table.Column<string>(nullable: true),
+                    Content = table.Column<string>(nullable: true),
                     ImageTitle = table.Column<string>(nullable: true),
-                    ImageData = table.Column<byte[]>(nullable: true)
+                    ImageData = table.Column<byte[]>(nullable: true),
+                    FileType = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -43,37 +46,6 @@ namespace Botzilla.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "AspNetUsers",
-                columns: table => new
-                {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    UserName = table.Column<string>(maxLength: 256, nullable: true),
-                    NormalizedUserName = table.Column<string>(maxLength: 256, nullable: true),
-                    Email = table.Column<string>(maxLength: 256, nullable: true),
-                    NormalizedEmail = table.Column<string>(maxLength: 256, nullable: true),
-                    EmailConfirmed = table.Column<bool>(nullable: false),
-                    PasswordHash = table.Column<string>(nullable: true),
-                    SecurityStamp = table.Column<string>(nullable: true),
-                    ConcurrencyStamp = table.Column<string>(nullable: true),
-                    PhoneNumber = table.Column<string>(nullable: true),
-                    PhoneNumberConfirmed = table.Column<bool>(nullable: false),
-                    TwoFactorEnabled = table.Column<bool>(nullable: false),
-                    LockoutEnd = table.Column<DateTimeOffset>(nullable: true),
-                    LockoutEnabled = table.Column<bool>(nullable: false),
-                    AccessFailedCount = table.Column<int>(nullable: false),
-                    FirstName = table.Column<string>(nullable: true),
-                    LastName = table.Column<string>(nullable: true),
-                    FacebookId = table.Column<long>(nullable: true),
-                    PictureUrl = table.Column<string>(nullable: true),
-                    Role = table.Column<string>(nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_AspNetUsers", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Countries",
                 columns: table => new
                 {
@@ -94,6 +66,41 @@ namespace Botzilla.Infrastructure.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Countries", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "EducationLevels",
+                columns: table => new
+                {
+                    Id = table.Column<long>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    IsDeleted = table.Column<bool>(nullable: false),
+                    DateDeleted = table.Column<DateTimeOffset>(nullable: true),
+                    DeletedBy = table.Column<int>(nullable: true),
+                    DateCreated = table.Column<DateTimeOffset>(nullable: false),
+                    LastModified = table.Column<DateTimeOffset>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_EducationLevels", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "EmailSubjects",
+                columns: table => new
+                {
+                    Id = table.Column<long>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    IsDeleted = table.Column<bool>(nullable: false),
+                    DateDeleted = table.Column<DateTimeOffset>(nullable: true),
+                    DeletedBy = table.Column<int>(nullable: true),
+                    DateCreated = table.Column<DateTimeOffset>(nullable: false),
+                    LastModified = table.Column<DateTimeOffset>(nullable: true),
+                    Name = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_EmailSubjects", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -164,6 +171,73 @@ namespace Botzilla.Infrastructure.Migrations
                         name: "FK_AspNetRoleClaims_AspNetRoles_RoleId",
                         column: x => x.RoleId,
                         principalTable: "AspNetRoles",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "AspNetUsers",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    UserName = table.Column<string>(maxLength: 256, nullable: true),
+                    NormalizedUserName = table.Column<string>(maxLength: 256, nullable: true),
+                    Email = table.Column<string>(maxLength: 256, nullable: true),
+                    NormalizedEmail = table.Column<string>(maxLength: 256, nullable: true),
+                    EmailConfirmed = table.Column<bool>(nullable: false),
+                    PasswordHash = table.Column<string>(nullable: true),
+                    SecurityStamp = table.Column<string>(nullable: true),
+                    ConcurrencyStamp = table.Column<string>(nullable: true),
+                    PhoneNumber = table.Column<string>(nullable: true),
+                    PhoneNumberConfirmed = table.Column<bool>(nullable: false),
+                    TwoFactorEnabled = table.Column<bool>(nullable: false),
+                    LockoutEnd = table.Column<DateTimeOffset>(nullable: true),
+                    LockoutEnabled = table.Column<bool>(nullable: false),
+                    AccessFailedCount = table.Column<int>(nullable: false),
+                    FirstName = table.Column<string>(nullable: true),
+                    LastName = table.Column<string>(nullable: true),
+                    FacebookId = table.Column<long>(nullable: true),
+                    PictureUrl = table.Column<string>(nullable: true),
+                    Role = table.Column<string>(nullable: true),
+                    EducationLevelId = table.Column<long>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AspNetUsers", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_AspNetUsers_EducationLevels_EducationLevelId",
+                        column: x => x.EducationLevelId,
+                        principalTable: "EducationLevels",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "EmailContacts",
+                columns: table => new
+                {
+                    Id = table.Column<long>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    IsDeleted = table.Column<bool>(nullable: false),
+                    DateDeleted = table.Column<DateTimeOffset>(nullable: true),
+                    DeletedBy = table.Column<int>(nullable: true),
+                    DateCreated = table.Column<DateTimeOffset>(nullable: false),
+                    LastModified = table.Column<DateTimeOffset>(nullable: true),
+                    To = table.Column<string>(nullable: true),
+                    Body = table.Column<string>(nullable: true),
+                    EmailAddress = table.Column<string>(nullable: true),
+                    NameOfSender = table.Column<string>(nullable: true),
+                    EmailSubjectId = table.Column<long>(nullable: false),
+                    IsReplied = table.Column<bool>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_EmailContacts", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_EmailContacts_EmailSubjects_EmailSubjectId",
+                        column: x => x.EmailSubjectId,
+                        principalTable: "EmailSubjects",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -281,6 +355,11 @@ namespace Botzilla.Infrastructure.Migrations
                 column: "RoleId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_AspNetUsers_EducationLevelId",
+                table: "AspNetUsers",
+                column: "EducationLevelId");
+
+            migrationBuilder.CreateIndex(
                 name: "EmailIndex",
                 table: "AspNetUsers",
                 column: "NormalizedEmail");
@@ -291,6 +370,11 @@ namespace Botzilla.Infrastructure.Migrations
                 column: "NormalizedUserName",
                 unique: true,
                 filter: "[NormalizedUserName] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_EmailContacts_EmailSubjectId",
+                table: "EmailContacts",
+                column: "EmailSubjectId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -317,6 +401,9 @@ namespace Botzilla.Infrastructure.Migrations
                 name: "Countries");
 
             migrationBuilder.DropTable(
+                name: "EmailContacts");
+
+            migrationBuilder.DropTable(
                 name: "Images");
 
             migrationBuilder.DropTable(
@@ -330,6 +417,12 @@ namespace Botzilla.Infrastructure.Migrations
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
+
+            migrationBuilder.DropTable(
+                name: "EmailSubjects");
+
+            migrationBuilder.DropTable(
+                name: "EducationLevels");
         }
     }
 }

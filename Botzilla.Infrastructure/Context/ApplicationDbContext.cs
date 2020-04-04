@@ -20,8 +20,11 @@ namespace Botzilla.Infrastructure.Context
         public DbSet<Section> Sections { get; set; }
         public DbSet<DocumentBase> Images { get; set; }
         public DbSet<EmailContact> EmailContacts { get; set; }
-        public DbSet<EmailSubject> EmailSubjects{ get; set; }
+        public DbSet<EmailSubject> EmailSubjects { get; set; }
+        public DbSet<EducationLevel> EducationLevels { get; set; }
         
+
+
         //public DbSet<NewsImage> NewsImages { get; set; }
 
 

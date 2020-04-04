@@ -2,21 +2,21 @@
 
 namespace Botzilla.Infrastructure.Migrations
 {
-    public partial class expandnews : Migration
+    public partial class educationlevelname : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AddColumn<string>(
-                name: "FileType",
-                table: "Articles",
+                name: "Name",
+                table: "EducationLevels",
                 nullable: true);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropColumn(
-                name: "FileType",
-                table: "Articles");
+                name: "Name",
+                table: "EducationLevels");
         }
     }
 }

@@ -92,6 +92,7 @@ namespace Botzilla.Api.Controllers
                 var mappedUser = _mapper.Map<User>(input);
                 mappedUser.Email = input.Email;
                 mappedUser.UserName = input.Email;
+                mappedUser.EducationLevelId = input.EducationLevelId;
                 var result = await _userManager.CreateAsync(mappedUser, input.Password);
 
                 await _userManager.AddToRoleAsync(mappedUser, input.Role);

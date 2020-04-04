@@ -52,6 +52,8 @@ namespace Botzilla
                 Api.SeedData.TemporarySeed.CountrySeed.SeedTestDataViaDbContext(myDbContext);
                 Api.SeedData.ConstantSeed.RoleSeed.SeedTestDataViaDbContext(roleManager);
                 Api.SeedData.ConstantSeed.EmailSubjectSeed.SeedTestDataViaDbContext(myDbContext);
+                Api.SeedData.ConstantSeed.EducationLevelSeed.SeedTestDataViaDbContext(myDbContext);
+
 
 
                 try
