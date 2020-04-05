@@ -86,38 +86,6 @@ namespace Botzilla.Api.Controllers
             return Ok(emailToReply);
         }
 
-        //[HttpPost]
-        //[Route("contactSendEmail")]
-        //public async Task<ActionResult> SendContactForm(CreateEmailContactRequest request)
-        //{
-        //    var subject = await _emailSubjectService
-        //        .Queryable()
-        //        .Where(x => x.Id == request.EmailSubjectId && !x.IsDeleted)
-        //        .AsNoTracking()
-        //        .SingleOrDefaultAsync();
-
-        //    var domain = _mapper.Map<EmailContact>(request);
-        //    domain.EmailSubjectId = request.EmailSubjectId;
-        //    _emailContactService.Insert(domain);
-
-        //    await _emailContactService.Save();
-
-        //    MailMessage mail = new MailMessage();
-        //    mail.To.Add(request.To);
-        //    mail.Subject = subject.Name;
-        //    mail.Body = request.Body;
-        //    mail.From = new MailAddress("marjanovicnevio@gmail.com");
-        //    mail.IsBodyHtml = false;
-        //    SmtpClient smtp = new SmtpClient("smtp.gmail.com");
-        //    smtp.Port = 587;
-        //    smtp.UseDefaultCredentials = true;
-        //    smtp.EnableSsl = true;
-        //    smtp.Credentials = new System.Net.NetworkCredential("marjanovicnevio@gmail.com", "dravengibsonusa123456789");
-        //    smtp.Send(mail);
-
-        //    return Ok(domain);
-        //}
-
         [HttpGet]
         [Route("getEmails")]
         public async Task<IActionResult> GetEmailsAsync()

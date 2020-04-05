@@ -64,6 +64,7 @@ namespace Botzilla
             services.AddScoped<IDocumentService, DocumentService>();
             services.AddScoped<IEmailContactService, EmailContactService>();
             services.AddScoped<IEmailSubjectService, EmailSubjectService>();
+            services.AddScoped<IEducationLevelService, EducationLevelService>();
 
 
             //services.AddScoped</*IFileService*/, FileService>();
@@ -81,6 +82,8 @@ namespace Botzilla
             services.AddTransient<ITrackableRepository<NewsImage>, TrackableRepository<NewsImage>>();
             services.AddTransient<ITrackableRepository<EmailContact>, TrackableRepository<EmailContact>>();
             services.AddTransient<ITrackableRepository<EmailSubject>, TrackableRepository<EmailSubject>>();
+            services.AddTransient<ITrackableRepository<EducationLevel>, TrackableRepository<EducationLevel>>();
+
 
 
             services.Configure<DocumentSettings>(Configuration.GetSection(nameof(DocumentSettings)));

@@ -6,12 +6,16 @@ using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using Botzilla.Core.CreateRequestModels;
+using Botzilla.Core.Services.ServiceContract;
+using Botzilla.Core.ViewModels;
 using Botzilla.Domain.Domain;
 using Botzilla.Infrastructure.Context;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 
@@ -24,11 +28,13 @@ namespace Botzilla.Api.Controllers
         //private readonly ApplicationDbContext _context;
         private readonly IMapper _mapper;
         private readonly SignInManager<User> _signInManager;
+        private readonly IEducationLevelService _educationLevelService;
         private readonly UserManager<User> _userManager;
         private readonly IConfiguration _config;
 
         public AuthController(ApplicationDbContext context,
         SignInManager<User> signInManager,
+        IEducationLevelService educationLevelService,
         IMapper mapper,
         UserManager<User> userManager,
         IConfiguration config)
@@ -36,6 +42,7 @@ namespace Botzilla.Api.Controllers
             _mapper = mapper;
             _userManager = userManager;
             _signInManager = signInManager;
+            _educationLevelService = educationLevelService;
             //_context = context;
             _config = config;
         }
@@ -114,7 +121,7 @@ namespace Botzilla.Api.Controllers
                     // $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
 
 
-                    return Ok("Successful Registration"); //Send Result or Message whatever you like.
+                    return Ok(); //Send Result or Message whatever you like.
                 }
                 else
                 {
@@ -131,6 +138,20 @@ namespace Botzilla.Api.Controllers
             {
                 return new JsonResult("Error Here"); ;
             }
+        }
+
+        [HttpGet]
+        [Route("getEducationLevels")]
+        public async Task<IActionResult> GetEducationLevels()
+        {
+            var educationLevel = await _educationLevelService
+                .Queryable()
+                .AsNoTracking()
+                .Where(c => !c.IsDeleted)
+                .ProjectTo<EducationLevelViewModel>(configuration: _mapper.ConfigurationProvider)
+                .ToListAsync();
+
+            return Ok(educationLevel);
         }
 
 
